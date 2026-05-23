@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌 For Ronie</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --pink: #ff6b9d; --deep: #c9184a; --soft: #ffd6e7; --purple: #c77dff; }
+  body { min-height: 100vh; background: linear-gradient(135deg, #fff0f6 0%, #fce4ec 50%, #f8bbd0 100%); font-family: 'Quicksand', sans-serif; overflow: hidden; }
+  .hearts-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .heart-float { position: absolute; bottom: -60px; animation: floatUp linear infinite; opacity: 0; }
+  @keyframes floatUp { 0%{transform:translateY(0) rotate(0deg);opacity:0} 10%{opacity:1} 90%{opacity:0.6} 100%{transform:translateY(-110vh) rotate(360deg);opacity:0} }
+  .screen { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; }
+  .hidden { display: none !important; }
+  #landing { background: transparent; }
+  .landing-title { font-family: 'Dancing Script', cursive; font-size: clamp(2rem,6vw,3.2rem); color: var(--deep); margin-bottom: 0.4rem; }
+  .landing-sub { font-size: 1rem; color: #c9184a99; margin-bottom: 2rem; }
+  .envelope-wrap { animation: pulse 2s ease-in-out infinite; margin-bottom: 1rem; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+  .envelope { font-size: 7rem; cursor: pointer; display: block; filter: drop-shadow(0 8px 24px rgba(255,107,157,0.5)); transition: transform 0.2s; }
+  .envelope:hover { transform: scale(1.15) rotate(-5deg); }
+  .tap-hint { font-family: 'Dancing Script', cursive; font-size: 1.3rem; color: var(--deep); animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  #game { background: linear-gradient(135deg, #1a0a0f 0%, #2d0a1e 100%); overflow-y: auto; justify-content: flex-start; padding-top: 1.2rem; }
+  .game-title { font-family: 'Dancing Script', cursive; font-size: 1.9rem; color: #ff6b9d; text-shadow: 0 0 20px #ff6b9d88; margin-bottom: 0.2rem; }
+  .game-sub { color: #ff6b9d99; font-size: 0.82rem; margin-bottom: 0.8rem; }
+  .lives-row { font-size: 1.5rem; margin-bottom: 0.6rem; letter-spacing: 0.15em; }
+  .score-bar { width: min(340px, 90vw); height: 12px; background: rgba(255,255,255,0.1); border-radius: 50px; overflow: hidden; margin-bottom: 0.4rem; }
+  .score-fill { height: 100%; background: linear-gradient(90deg, #ff6b9d, #c77dff); border-radius: 50px; width: 0%; transition: width 0.3s ease; }
+  .score-text { color: #ffd6e7; font-size: 0.85rem; margin-bottom: 0.8rem; }
+  #arena { position: relative; width: min(340px, 92vw); height: 300px; background: rgba(255,255,255,0.04); border: 2px solid rgba(255,107,157,0.35); border-radius: 18px; overflow: hidden; }
+  .item { position: absolute; font-size: 1.9rem; cursor: pointer; user-select: none; line-height: 1; transition: transform 0.1s; }
+  .item:active { transform: scale(1.4); }
+  .game-hint { color: rgba(255,214,231,0.55); font-size: 0.76rem; margin-top: 0.8rem; }
+  .overlay-msg { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; background: rgba(26,10,15,0.85); border-radius: 16px; }
+  .overlay-msg span { font-family: 'Dancing Script', cursive; font-size: 1.6rem; color: #ff6b9d; }
+  .retry-btn { background: linear-gradient(135deg,#ff6b9d,#c77dff); color: white; border: none; padding: 0.55rem 1.6rem; border-radius: 50px; font-size: 1rem; cursor: pointer; font-family: 'Quicksand', sans-serif; font-weight: 600; }
+  #sorry { background: linear-gradient(135deg, #fff0f6, #fce4ec); animation: fadeIn 1s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+  .sorry-emoji { font-size: 4.5rem; margin-bottom: 0.8rem; animation: shake 0.6s ease 0.8s both; }
+  @keyframes shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-12deg)} 75%{transform:rotate(12deg)} }
+  .sorry-name { font-family: 'Dancing Script', cursive; font-size: clamp(2rem,8vw,3rem); color: var(--purple); margin-bottom: 0.3rem; animation: popIn 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; }
+  .sorry-title { font-family: 'Dancing Script', cursive; font-size: clamp(2.5rem,10vw,4rem); color: var(--deep); text-shadow: 3px 3px 12px rgba(201,24,74,0.3); margin-bottom: 1rem; animation: popIn 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.5s both; }
+  @keyframes popIn { from{opacity:0;transform:scale(0)} to{opacity:1;transform:scale(1)} }
+  .sorry-msg { font-size: 1rem; color: #c9184a; line-height: 1.9; max-width: 380px; margin: 0 auto 1.5rem; animation: fadeIn 1s ease 1.2s both; }
+  .replay-btn { background: linear-gradient(135deg, var(--pink), var(--purple)); color: white; border: none; padding: 0.75rem 2rem; border-radius: 50px; font-family: 'Quicksand', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 20px rgba(255,107,157,0.4); transition: transform 0.2s; }
+  .replay-btn:hover { transform: translateY(-3px); }
+  .hearts-rain { position: fixed; inset: 0; pointer-events: none; z-index: 4; overflow: hidden; }
+  .splash { position: fixed; pointer-events: none; z-index: 99; font-size: 1.5rem; animation: splashOut 0.6s ease forwards; }
+  @keyframes splashOut { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.5) rotate(30deg);opacity:0} }
+</style>
+</head>
+<body>
+<div class="hearts-bg" id="bgHearts"></div>
+<div class="screen" id="landing">
+  <h1 class="landing-title">💌 Hey Ronie...</h1>
+  <p class="landing-sub">there's a little something waiting for you 🩷</p>
+  <div class="envelope-wrap"><span class="envelope" id="envBtn">💌</span></div>
+  <p class="tap-hint">tap to open ✨</p>
+</div>
+<div class="screen hidden" id="game">
+  <h2 class="game-title">💝 Catch My Heart, Ronie!</h2>
+  <p class="game-sub">Catch 15 hearts to unlock my message 💌</p>
+  <div class="lives-row" id="livesRow">❤️❤️❤️</div>
+  <div class="score-bar"><div class="score-fill" id="fill"></div></div>
+  <p class="score-text" id="scoreText">0 / 15</p>
+  <div id="arena"></div>
+  <p class="game-hint">💗 Tap pink hearts | avoid 🖤 black hearts!</p>
+</div>
+<div class="screen hidden" id="sorry">
+  <div class="hearts-rain" id="rainLayer"></div>
+  <div class="sorry-emoji">🥺</div>
+  <p class="sorry-name">Ronie,</p>
+  <h1 class="sorry-title">I am Sorry 💔</h1>
+  <p class="sorry-msg">I know I hurt you, and I truly hate that I did. 💔<br>You mean so much more to me than anything.<br>I'm deeply, genuinely sorry, Ronie. 🩷<br>Please forgive me?</p>
+  <button class="replay-btn" onclick="location.reload()">💌 Read Again</button>
+</div>
+<script>
+const emojiPool = ['🩷','💗','💓','💕','💞','❤️','🌸','✨','💫'];
+function spawnBgHeart() {
+  const d = document.createElement('div');
+  d.className = 'heart-float';
+  d.textContent = emojiPool[Math.random()*emojiPool.length|0];
+  const dur = 7 + Math.random()*8;
+  d.style.cssText = `left:${Math.random()*100}vw;font-size:${1+Math.random()*1.4}rem;animation-duration:${dur}s;animation-delay:${Math.random()*3}s`;
+  document.getElementById('bgHearts').appendChild(d);
+  setTimeout(()=>d.remove(),(dur+3)*1000);
+}
+setInterval(spawnBgHeart, 450);
+document.addEventListener('click', e => {
+  const s = document.createElement('div');
+  s.className = 'splash';
+  s.textContent = emojiPool[Math.random()*4|0];
+  s.style.left = (e.clientX-16)+'px';
+  s.style.top  = (e.clientY-16)+'px';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(), 600);
+});
+function show(id) {
+  ['landing','game','sorry'].forEach(s => {
+    document.getElementById(s).classList.toggle('hidden', s !== id);
+  });
+}
+document.getElementById('envBtn').addEventListener('click', () => { show('game'); initGame(); });
+const NEEDED = 15;
+let score, lives, running, fallTimers, spawnTimer;
+function initGame() {
+  score = 0; lives = 3; running = true;
+  fallTimers = []; spawnTimer = null;
+  document.getElementById('arena').innerHTML = '';
+  refreshHUD(); scheduleSpawn();
+}
+function refreshHUD() {
+  document.getElementById('livesRow').textContent = '❤️'.repeat(lives) + '🖤'.repeat(Math.max(0,3-lives));
+  document.getElementById('fill').style.width = Math.min(score/NEEDED*100,100)+'%';
+  document.getElementById('scoreText').textContent = score+' / '+NEEDED;
+}
+function scheduleSpawn() {
+  if (!running) return;
+  spawnTimer = setTimeout(() => {
+    if (!running) return;
+    dropItem(true);
+    if (Math.random() < 0.5) dropItem(false);
+    scheduleSpawn();
+  }, 700);
+}
+function dropItem(isHeart) {
+  const arena = document.getElementById('arena');
+  const el = document.createElement('div');
+  el.className = 'item';
+  el.textContent = isHeart ? (Math.random()<0.5?'💗':'🩷') : '🖤';
+  const areaW = arena.offsetWidth || 340;
+  let posX = Math.floor(Math.random()*(areaW-44));
+  let posY = -44;
+  el.style.left = posX+'px';
+  el.style.top  = posY+'px';
+  arena.appendChild(el);
+  const speed = 1.8 + Math.random()*1.8 + score*0.05;
+  let clicked = false;
+  el.addEventListener('pointerdown', e => {
+    e.stopPropagation();
+    if (!running || clicked) return;
+    clicked = true;
+    el.remove();
+    if (isHeart) {
+      score++;
+      popText(arena, posX, posY, '+1 💗');
+      refreshHUD();
+      if (score >= NEEDED) { stopGame(); setTimeout(showSorry, 500); }
+    } else {
+      lives--;
+      popText(arena, posX, posY, '💔 ouch!');
+      refreshHUD();
+      if (lives <= 0) { stopGame(); showRetry(); }
+    }
+  });
+  const tid = setInterval(() => {
+    if (!running) { clearInterval(tid); if(el.parentNode) el.remove(); return; }
+    posY += speed;
+    el.style.top = posY+'px';
+    if (posY > (arena.offsetHeight||300)+10) {
+      clearInterval(tid);
+      if (el.parentNode) el.remove();
+      if (!clicked && isHeart && running) { lives--; refreshHUD(); if (lives <= 0) { stopGame(); showRetry(); } }
+    }
+  }, 20);
+  fallTimers.push(tid);
+}
+function stopGame() { running = false; clearTimeout(spawnTimer); fallTimers.forEach(clearInterval); }
+function popText(arena, x, y, txt) {
+  const p = document.createElement('div');
+  p.style.cssText = `position:absolute;left:${x}px;top:${Math.max(0,y)}px;color:#ff6b9d;font-weight:700;font-size:0.9rem;pointer-events:none;z-index:9;animation:splashOut 0.6s ease forwards;`;
+  p.textContent = txt;
+  arena.appendChild(p);
+  setTimeout(()=>p.remove(), 700);
+}
+function showRetry() {
+  const arena = document.getElementById('arena');
+  arena.innerHTML = '';
+  const ov = document.createElement('div');
+  ov.className = 'overlay-msg';
+  ov.innerHTML = `<span>💔 Try again, Ronie!</span><button class="retry-btn" id="retryBtn">💗 Retry</button>`;
+  arena.appendChild(ov);
+  document.getElementById('retryBtn').addEventListener('click', initGame);
+}
+function showSorry() { show('sorry'); rainHearts(); }
+function rainHearts() {
+  const c = document.getElementById('rainLayer');
+  for (let i=0;i<40;i++) {
+    setTimeout(()=>{
+      const d = document.createElement('div');
+      const dur = 5+Math.random()*5;
+      d.style.cssText = `position:absolute;left:${Math.random()*100}vw;top:-60px;font-size:${1.3+Math.random()*1.8}rem;opacity:0;animation:floatUp ${dur}s linear infinite;`;
+      d.textContent = emojiPool[Math.random()*emojiPool.length|0];
+      c.appendChild(d);
+    }, i*130);
+  }
+}
+</script>
+</body>
+</html>
